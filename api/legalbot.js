@@ -5,18 +5,22 @@ export default async function handler(req, res) {
 
   const { question } = req.body;
   const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-  const OPENAI_MODEL = "gpt-3.5-turbo";
+  const OPENAI_MODEL = process.env.OPENAI_MODEL || "gpt-3.5-turbo";
 
   if (!OPENAI_API_KEY) {
     return res.status(500).json({ error: 'Missing OpenAI API key in environment variables.' });
   }
 
+  if (!question || question.trim() === "") {
+    return res.status(400).json({ error: "Question manquante dans la requête." });
+  }
+
   try {
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    const openaiRes = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${OPENAI_API_KEY}`
+        "Authorization": `Bearer ${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}`
       },
       body: JSON.stringify({
         model: OPENAI_MODEL,
@@ -33,10 +37,19 @@ export default async function handler(req, res) {
       })
     });
 
-    const data = await response.json();
-    res.status(200).json({ answer: data.choices?.[0]?.message?.content || "Pas de réponse." });
+    const data = await openaiRes.json();
+    console.log("Réponse OpenAI complète :", JSON.stringify(data, null, 2));
+
+    if (data.choices && data.choices.length > 0) {
+      res.status(200).json({ answer: data.choices[0].message.content });
+    } else if (data.error) {
+      res.status(500).json({ error: data.error.message || "Erreur API OpenAI inconnue." });
+    } else {
+      res.status(500).json({ error: "Réponse vide reçue depuis OpenAI." });
+    }
+
   } catch (err) {
     console.error("Erreur OpenAI :", err);
-res.status(500).json({ error: err.message });
+    res.status(500).json({ error: err.message || "Erreur inattendue du serveur." });
   }
 }
