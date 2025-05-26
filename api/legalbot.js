@@ -1,22 +1,24 @@
 export default async function handler(req, res) {
-  console.log("QUESTION REÇUE :", question);
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { question } = req.body;
-  const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-  const OPENAI_MODEL = process.env.OPENAI_MODEL || "gpt-3.5-turbo";
-
-  if (!OPENAI_API_KEY) {
-    return res.status(500).json({ error: 'Missing OpenAI API key in environment variables.' });
-  }
-
-  if (!question || question.trim() === "") {
-    return res.status(400).json({ error: "Question manquante dans la requête." });
-  }
-
   try {
+    const body = await req.json(); // 💡 ici on parse bien le corps
+    const question = body.question;
+    console.log("QUESTION REÇUE :", question);
+
+    const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+    const OPENAI_MODEL = process.env.OPENAI_MODEL || "gpt-3.5-turbo";
+
+    if (!OPENAI_API_KEY) {
+      return res.status(500).json({ error: 'Missing OpenAI API key in environment variables.' });
+    }
+
+    if (!question || question.trim() === "") {
+      return res.status(400).json({ error: "Question manquante dans la requête." });
+    }
+
     const openaiRes = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
