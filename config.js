@@ -1,2 +1,2 @@
-const OPENAI_API_KEY = "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";
+const OPENAI_API_KEY = "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";
 const OPENAI_MODEL = "gpt-3.5-turbo";
