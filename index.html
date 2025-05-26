@@ -62,9 +62,9 @@
 
     sendToLegalbot(fullPrompt);
   }
-</script>
 
-</script>
+
+
 
 
 <script>
@@ -80,9 +80,9 @@
 
     sendToLegalbot(fullPrompt);
   }
-</script>
 
-</script>
+
+
 </head>
 <body>
     <div class="screens-grid">
@@ -242,6 +242,13 @@
   <button onclick="submitContractForm()" style="margin-top: 1rem;">Générer le contrat</button>
 </div>
 
+
+    <div style="margin-top: 2rem;">
+      <label for="input-question">❓ Poser une question juridique :</label><br>
+      <input type="text" id="input-question" placeholder="Ex : Dois-je déclarer ce feat à la SPPF ?" style="width:100%; margin-top:0.5rem;"/>
+      <button onclick="askQuestion()" style="margin-top: 1rem;">Envoyer</button>
+    </div>
+    
 <div id="response-box" style="margin-top: 20px; padding: 1rem; background: #111; color: #0f0; border-radius: 8px;"></div>
 
 <script>
@@ -298,9 +305,9 @@
 
     sendToLegalbot(fullPrompt);
   }
-</script>
 
-</script>
+
+
 
 
 <script>
@@ -316,9 +323,9 @@
 
     sendToLegalbot(fullPrompt);
   }
-</script>
 
-</script>
+
+
 
 
 <script>
@@ -388,9 +395,9 @@
 
     sendToLegalbot(fullPrompt);
   }
-</script>
 
-</script>
+
+
 
 
 <script>
@@ -406,9 +413,9 @@
 
     sendToLegalbot(fullPrompt);
   }
-</script>
 
-</script>
+
+
 
 <div style="margin-top: 2rem;">
   <label for="contract-file">📎 Sélectionnez un contrat à analyser :</label><br>
@@ -446,7 +453,78 @@
   <button onclick="submitContractForm()" style="margin-top: 1rem;">Générer le contrat</button>
 </div>
 
+
+    <div style="margin-top: 2rem;">
+      <label for="input-question">❓ Poser une question juridique :</label><br>
+      <input type="text" id="input-question" placeholder="Ex : Dois-je déclarer ce feat à la SPPF ?" style="width:100%; margin-top:0.5rem;"/>
+      <button onclick="askQuestion()" style="margin-top: 1rem;">Envoyer</button>
+    </div>
+    
 <div id="response-box" style="margin-top:2rem; padding:1rem; background:#111; color:#0f0; border-radius:6px;"></div>
+
+
+<script>
+  async function sendToLegalbot(prompt) {
+    const responseBox = document.getElementById('response-box');
+    responseBox.textContent = "⏳ Traitement en cours...";
+    try {
+      const res = await fetch("/api/legalbot", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question: prompt })
+      });
+      const data = await res.json();
+      responseBox.textContent = data.answer || data.error || "Erreur inattendue.";
+    } catch (err) {
+      responseBox.textContent = "Erreur de connexion.";
+      console.error(err);
+    }
+  }
+
+  function askQuestion() {
+    const input = document.getElementById('input-question').value;
+    sendToLegalbot(input);
+  }
+
+  function generateContract() {
+    sendToLegalbot("Je veux générer un contrat de réalisation artistique. Pose-moi toutes les questions nécessaires une par une.");
+  }
+
+  function optimizeContract() {
+    sendToLegalbot("Optimise ce contrat : [insérer contenu ici]");
+  }
+
+  function readUploadedFile() {
+    const fileInput = document.getElementById('contract-file');
+    const file = fileInput.files[0];
+    const reader = new FileReader();
+
+    if (!file) {
+      alert("Veuillez sélectionner un fichier.");
+      return;
+    }
+
+    reader.onload = function(e) {
+      const content = e.target.result;
+      sendToLegalbot("Voici un contrat à analyser :\n\n" + content);
+    };
+
+    reader.readAsText(file);
+  }
+
+  function submitContractForm() {
+    const type = document.getElementById('contract-type').value;
+    const artist = document.getElementById('artist-name').value;
+    const producer = document.getElementById('producer-name').value;
+    const advance = document.getElementById('advance-amount').value;
+    const duration = document.getElementById('contract-duration').value;
+    const territory = document.getElementById('contract-territory').value;
+
+    const fullPrompt = `Génère un contrat de ${type} entre ${producer} et ${artist}. Montant de l'avance : ${advance}€. Durée : ${duration}. Territoire : ${territory}. Merci d'inclure toutes les clauses standard AUDIO 212 GROUP.`;
+
+    sendToLegalbot(fullPrompt);
+  }
+</script>
 
 </body>
 </html>
