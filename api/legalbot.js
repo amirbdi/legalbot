@@ -4,8 +4,16 @@ export default async function handler(req, res) {
   }
 
   try {
-    const body = await req.json(); // 💡 ici on parse bien le corps
-    const question = body.question;
+    let body = "";
+    await new Promise((resolve, reject) => {
+      req.on("data", chunk => (body += chunk));
+      req.on("end", resolve);
+      req.on("error", reject);
+    });
+
+    const parsedBody = JSON.parse(body);
+    const question = parsedBody.question;
+
     console.log("QUESTION REÇUE :", question);
 
     const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
