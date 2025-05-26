@@ -36,6 +36,7 @@ export default async function handler(req, res) {
     const data = await response.json();
     res.status(200).json({ answer: data.choices?.[0]?.message?.content || "Pas de réponse." });
   } catch (err) {
-    res.status(500).json({ error: "Erreur serveur lors de l'appel à OpenAI." });
+    console.error("Erreur OpenAI :", err);
+res.status(500).json({ error: err.message });
   }
 }
