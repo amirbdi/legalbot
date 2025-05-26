@@ -31,7 +31,7 @@ export default async function handler(req, res) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${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}`
+        "Authorization": `Bearer ${OPENAI_API_KEY}`
       },
       body: JSON.stringify({
         model: OPENAI_MODEL,
