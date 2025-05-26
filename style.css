@@ -1,0 +1,38 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #111;
+  color: #eee;
+  margin: 0;
+  padding: 20px;
+}
+main {
+  max-width: 600px;
+  margin: auto;
+  text-align: center;
+}
+textarea {
+  width: 100%;
+  padding: 10px;
+  background: #222;
+  color: #fff;
+  border: none;
+  margin-bottom: 20px;
+  border-radius: 5px;
+}
+button {
+  background: #0f0;
+  color: #000;
+  font-weight: bold;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+pre {
+  text-align: left;
+  background: #222;
+  padding: 10px;
+  border-radius: 5px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}

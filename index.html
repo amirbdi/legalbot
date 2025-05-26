@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LEGALBOT AUDIO 212 GROUP</title>
+  <link rel="manifest" href="/manifest.json">
+  <link rel="stylesheet" href="style.css">
+  <script src="config.js"></script>
+</head>
+<body>
+  <main>
+    <img src="logo.png" alt="AUDIO 212 Logo" style="max-width: 200px; margin: 20px auto; display: block;">
+    <h1>LEGALBOT AUDIO 212 GROUP</h1>
+    <p>Posez votre question juridique liée à la musique.</p>
+    <textarea id="question" placeholder="Ex : Quelle clause ajouter pour un feat international ?" rows="6"></textarea>
+    <button onclick="askGPT()">Envoyer à LEGALBOT</button>
+    <pre id="response"></pre>
+  </main>
+  <script>
+    async function askGPT() {
+      const question = document.getElementById('question').value;
+      const responseField = document.getElementById('response');
+      responseField.textContent = "Chargement...";
+      const res = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${OPENAI_API_KEY}`
+        },
+        body: JSON.stringify({
+          model: "gpt-4",
+          messages: [
+            {
+              role: "system",
+              content: "Tu es LEGALBOT AUDIO 212 GROUP, un juriste spécialisé dans les contrats musicaux. Tu réponds de façon claire, structurée, avec un ton formel. Tu ne génères jamais de clauses non validées par AUDIO 212 GROUP."
+            },
+            {
+              role: "user",
+              content: question
+            }
+          ]
+        })
+      });
+      const data = await res.json();
+      responseField.textContent = data.choices?.[0]?.message?.content || "Erreur lors de la réponse.";
+    }
+  </script>
+</body>
+</html>
